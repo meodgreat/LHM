@@ -1,0 +1,771 @@
+﻿
+
+<?php
+include 'header-footer.php';
+require_once 'db.php';
+
+$stmt = $pdo->query('SELECT title, slug, summary, featured_image, created_at, category FROM blog_posts ORDER BY created_at DESC LIMIT 3');
+$latest_posts = $stmt->fetchAll();
+
+ob_start();
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Legacy Holistic Mission</title>
+    <link rel="icon" type="image/x-icon" href="lhm.png">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --lhm-teal: #083d47;
+            --lhm-blue: #3a8fab;
+            --lhm-blue-light: #7eb8d4;
+            --lhm-gray: #f9fafb;
+            --lhm-white: #ffffff;
+            --lhm-card-bg: #f1f6f7;
+        }
+
+        body {
+            font-family: 'Comfortaa', cursive;
+            background-color: var(--lhm-white);
+            color: #4b5563;
+            overflow-x: hidden;
+        }
+
+        /* --- Modern Hero (Synced with Programs) --- */
+        .hero-about {
+            background: linear-gradient(rgba(8, 61, 71, 0.85), rgba(8, 61, 71, 0.85)), url('pexels-safari-consoler-3290243-11834966.jpg');
+            background-size: cover;
+            background-position: center;
+            padding: 160px 0 100px;
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0% 100%);
+        }
+
+        .mission-card {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .mission-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(8, 61, 71, 0.15);
+        }
+
+        /* --- Redesigned Vision Section Styles --- */
+        .vision-item {
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+        .vision-item i {
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .vision-item:hover i {
+            transform: scale(1.2) rotate(-8deg);
+            color: white !important;
+        }
+        .vision-item:hover span {
+            color: var(--lhm-blue-light);
+        }
+
+        .value-card {
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+            padding: 2rem 1rem;
+            border-radius: 2rem;
+        }
+        .value-card i {
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .value-card:hover i {
+            transform: scale(1.2) rotate(12deg) !important;
+            color: var(--lhm-blue) !important;
+        }
+        .value-card:hover span {
+            color: var(--lhm-teal);
+        }
+
+        .leader-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .leader-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(8, 61, 71, 0.1);
+        }
+
+        .nav-link { position: relative; }
+        .nav-link::after {
+            content: ''; position: absolute; width: 0; height: 2px;
+            bottom: -4px; left: 0; background-color: var(--lhm-blue);
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after { width: 100%; }
+        
+        .bg-lhm-teal { background-color: var(--lhm-teal); }
+        .bg-lhm-blue { background-color: var(--lhm-blue); }
+        .text-lhm-teal { color: var(--lhm-teal); }
+        .text-lhm-blue { color: var(--lhm-blue); }
+        .text-lhm-blue-light { color: var(--lhm-blue-light); }
+        
+        .btn-bold {
+            box-shadow: 0 4px 0px 0px rgba(0,0,0,0.15);
+        }
+        .mobile-nav-menu {
+            display: none;
+        }
+        .mobile-nav-menu.open {
+            display: block;
+        }
+        @media (max-width: 767px) {
+            .mobile-donate-hide {
+                display: none;
+            }
+            .hero-about {
+                padding: 130px 0 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="fixed w-full z-50 bg-white/95 backdrop-blur-md shadow-md border-b border-gray-100 transition-all duration-300">
+        <div class="max-w-[92%] mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#home" class="flex items-center gap-3">
+                <img src="lhm.png" alt="LHM Logo" class="h-10 w-auto object-contain">
+                <span class="font-bold text-lhm-teal text-xl tracking-tighter hidden md:inline">Legacy Holistic Mission</span>
+                <span class="font-bold text-lhm-teal text-xl tracking-tighter md:hidden">LHM</span>
+            </a>
+            <div class="hidden md:flex gap-10 font-bold text-sm items-center">
+                <a href="index.php" class="text-lhm-teal hover:text-lhm-teal transition nav-link">Home</a>
+                <a href="about.php" class="text-lhm-teal hover:text-lhm-teal transition nav-link">About</a>
+                <div class="relative group">
+                    <a href="programs.php" class="text-lhm-teal hover:text-lhm-teal transition nav-link inline-flex items-center gap-2">Programs <i class="fas fa-caret-down text-xs"></i></a>
+                    <div class="absolute left-0 mt-2 w-72 bg-white rounded-lg shadow-lg p-2 hidden group-hover:block z-50">
+                        <a href="programs.php#language-development-literacy" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">Language Development & Literacy</a>
+                        <a href="programs.php#education-child-development" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">Education & Child Development</a>
+                        <a href="programs.php#emergency-disaster-response" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">Emergency & Disaster Response</a>
+                        <a href="programs.php#livelihoods-economic-resilience" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">Livelihoods & Economic Resilience</a>
+                        <a href="programs.php#health-nutrition-wash" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">Health, Nutrition & WASH</a>
+                        <a href="programs.php#faith-public-engagement" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">Faith & Public Engagement</a>
+                        <a href="programs.php#knowledge-innovation" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">Knowledge & Innovation</a>
+                    </div>
+                </div>
+                <a href="blog.php" class="text-lhm-teal hover:text-lhm-teal transition nav-link">News and Blogs</a>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="index.php#donate" class="mobile-donate-hide bg-lhm-blue text-white px-7 py-2.5 rounded-full text-sm font-bold hover:bg-lhm-teal transition-all shadow-lg hover:shadow-xl btn-bold">Donate</a>
+                <button id="mobileNavToggle" class="md:hidden text-lhm-teal text-xl" aria-label="Toggle menu" aria-expanded="false" aria-controls="mobileNavMenu">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+        <div id="mobileNavMenu" class="mobile-nav-menu md:hidden border-t border-gray-100 bg-white/95 backdrop-blur-md">
+            <div class="px-6 py-4 flex flex-col gap-4 font-bold text-sm">
+                <a href="index.php" class="text-lhm-teal">Home</a>
+                <a href="about.php" class="text-lhm-teal">About</a>
+                <a href="programs.php" class="text-lhm-teal">Programs</a>
+                <a href="blog.php" class="text-lhm-teal">News and Blogs</a>
+                <a href="index.php#donate" class="bg-lhm-blue text-white px-5 py-2.5 rounded-full text-center">Donate</a>
+            </div>
+        </div>
+    </nav>
+
+    <header id="about" class="hero-about text-center text-white">
+        <div class="max-w-4xl mx-auto px-6" data-aos="zoom-out">
+            <h1 class="text-5xl md:text-7xl font-bold mb-6">About Our Mission</h1>
+            <p class="text-white/80 text-lg md:text-xl font-light max-w-2xl mx-auto">
+                Guided by faith, driven by community, dedicated to Africa.
+            </p>
+        </div>
+    </header>
+
+<section class="py-12 lg:py-0 bg-[#f9fafb] relative overflow-hidden flex items-center justify-center h-auto lg:h-screen lg:min-h-[600px] lg:max-h-[750px]" id="welcome-compact">
+    
+    <!-- Micro Background Glow Accents -->
+    <div class="absolute top-0 right-0 w-80 h-80 rounded-full bg-[#3a8fab]/5 blur-3xl pointer-events-none"></div>
+
+    <div class="w-full max-w-6xl mx-auto px-6 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            <!-- Left Text Block (Spans 7 Columns) -->
+            <div class="lg:col-span-7 flex flex-col justify-center" data-aos="fade-right">
+                
+                <!-- Compact Eyebrow Label -->
+                <div class="inline-flex items-center gap-2 mb-3">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#3a8fab]"></span>
+                    <span class="text-[11px] font-black uppercase tracking-widest text-[#083d47]">Who We Are</span>
+                </div>
+
+                <!-- Hard-Hitting, Crisp Header -->
+                <h2 class="text-3xl md:text-4xl font-black text-[#083d47] tracking-tight mb-4 leading-tight">
+                    Welcome to <span class="text-[#3a8fab]">Legacy Holistic</span> Mission
+                </h2>
+                
+                <!-- Dense, High-Contrast Text Content -->
+                <div class="space-y-3 text-slate-800 text-sm md:text-base leading-relaxed">
+                    <p class="font-black border-l-4 border-[#3a8fab] pl-3 text-slate-900">
+                        Welcome to a community dedicated to whole-person transformation. At LHM, we believe that to change a life, we must nurture the entire individual—body, mind, and spirit.
+                    </p>
+                    <p class="font-bold text-slate-600 pl-4">
+                        Our mission is to walk alongside communities, empowering individuals to build their own capacity and thrive on their own terms. Together, we are creating meaningful, sustainable change today, paving the way for a brighter tomorrow and a legacy that transforms generations.
+                    </p>
+                </div>
+
+                <!-- Compact Action Badges (Saves vertical spacing) -->
+                <div class="mt-5 pt-4 border-t border-slate-200/80 flex flex-wrap gap-4">
+                    <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-slate-100 shadow-sm">
+                        <i class="fas fa-check text-xs text-[#3a8fab]"></i>
+                        <span class="text-xs font-black text-[#083d47]">Whole-Person Care</span>
+                    </div>
+                    <div class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-slate-100 shadow-sm">
+                        <i class="fas fa-check text-xs text-[#083d47]"></i>
+                        <span class="text-xs font-black text-[#083d47]">Sustainable Capacity</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Media Column (Spans 5 Columns) -->
+            <div class="lg:col-span-5 relative flex items-center" data-aos="fade-left">
+                
+                <!-- Framing Box Wrapper with Strict Height Bounds on Desktop -->
+                <div class="relative w-full h-[280px] md:h-[340px] lg:h-[400px] rounded-[2rem] overflow-hidden shadow-xl border-4 border-white bg-white group">
+                    <img 
+                        src="pexels-safari-consoler-3290243-11834966.jpg" 
+                        alt="LHM Community Transformation" 
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    >
+                    <!-- Bottom Dark Overlay Blend -->
+                    <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-5 pt-12">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-[#7eb8d4] mb-0.5">LHM Outreach</p>
+                        <h4 class="text-white font-black text-base tracking-tight">Transforming Communities</h4>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section id="whole-person-flow" class="py-24 bg-[var(--lhm-white)] relative overflow-hidden">
+    <div class="absolute left-1/2 top-0 bottom-0 w-px bg-[var(--lhm-program-card-border)] hidden md:block"></div>
+
+    <div class="max-w-[80%] mx-auto px-4 sm:px-6 relative z-10">
+        
+        <div class="text-center mb-24" data-aos="fade-up">
+            <span class="text-[var(--lhm-blue)] font-bold text-xs uppercase tracking-[0.2em] block mb-3">Our Core Philosophy</span>
+            <h2 class="text-3xl md:text-5xl font-extrabold text-[var(--lhm-teal)] tracking-tight">The Whole Person</h2>
+            <div class="w-12 h-1 bg-[var(--lhm-blue-light)] mx-auto mt-4 rounded-full"></div>
+        </div>
+
+        <div class="space-y-16 md:space-y-24">
+            
+            <div class="grid md:grid-cols-2 gap-8 items-center" data-aos="fade-right">
+                <div class="md:text-right md:pr-12">
+                    <span class="text-4xl md:text-6xl font-black text-[var(--lhm-program-card)] select-none block md:inline">01</span>
+                    <h3 class="text-2xl font-extrabold text-[var(--lhm-teal)] mt-1 md:mt-0">The Mind</h3>
+                </div>
+                <div class="md:pl-12 border-l-2 border-transparent md:border-[var(--lhm-blue-light)] py-2">
+                    <p class="text-gray-600 text-sm md:text-base leading-relaxed max-w-md">
+                        Nourishing intellect, literacy, and deep emotional resilience. It is the capacity to think critically, communicate fluidly in one's native tongue, and innovate for a sustainable future.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 items-center" data-aos="fade-left">
+                <div class="order-last md:order-first md:text-right md:pr-12 md:border-r-2 md:border-[var(--lhm-blue-light)] py-2">
+                    <p class="text-gray-600 text-sm md:text-base leading-relaxed max-w-md md:ml-auto">
+                        Meeting fundamental physical and environmental needs. This means ensuring clean water access, stable nutrition, healthcare systems, and rapid relief during structural emergencies.
+                    </p>
+                </div>
+                <div class="order-first md:order-last md:pl-12">
+                    <span class="text-4xl md:text-6xl font-black text-[var(--lhm-program-card)] select-none block md:inline">02</span>
+                    <h3 class="text-2xl font-extrabold text-[var(--lhm-teal)] mt-1 md:mt-0">The Body</h3>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 items-center" data-aos="fade-right">
+                <div class="md:text-right md:pr-12">
+                    <span class="text-4xl md:text-6xl font-black text-[var(--lhm-program-card)] select-none block md:inline">03</span>
+                    <h3 class="text-2xl font-extrabold text-[var(--lhm-teal)] mt-1 md:mt-0">The Spirit</h3>
+                </div>
+                <div class="md:pl-12 border-l-2 border-transparent md:border-[var(--lhm-blue-light)] py-2">
+                    <p class="text-gray-600 text-sm md:text-base leading-relaxed max-w-md">
+                        Cultivating ethical values, inner purpose, and deep social connection. It relies on mobilizing faith spaces, fostering servant-leadership, and protecting shared human dignity.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+ <!-- Glassmorphism Theme: High Contrast Mission Pillars Section -->
+<section class="py-24 text-slate-900 bg-white relative overflow-hidden" id="mission">
+    
+    <!-- Subtle Brand Decorative Gradients -->
+    <div class="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-[#3a8fab]/5 blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-[#083d47]/5 blur-[120px] pointer-events-none"></div>
+
+    <div class="max-w-6xl mx-auto px-6 relative z-10">
+        
+        <!-- Header Section: Clean & Substantial -->
+        <div class="text-center mb-20 max-w-2xl mx-auto" data-aos="fade-up">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight uppercase">
+                Our Mission Pillars
+            </h2>
+            <p class="text-base md:text-lg text-gray-600 font-normal leading-relaxed">
+                We serve the whole person, empower communities, and create lasting impact that transforms generations.
+            </p>
+        </div>
+        
+        <!-- Crisp High-Contrast Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <!-- Pillar 1: Social Transformation -->
+            <div class="bg-[#f1f6f7] border border-transparent p-8 rounded-3xl shadow-sm flex flex-col justify-between transition-all duration-300 hover:bg-white hover:border-[#083d47]/30 hover:shadow-xl hover:-translate-y-1 group" data-aos="fade-up">
+                <div>
+                    <!-- Deep Teal Icon Badge -->
+                    <div class="w-12 h-12 rounded-2xl bg-[#083d47] flex items-center justify-center text-white text-lg mb-5 shadow-sm transition-transform duration-300 group-hover:scale-105">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <!-- Elevated Typographic Balance -->
+                    <h3 class="text-xl font-extrabold text-slate-900 mb-3 tracking-tight">
+                        Social Transformation
+                    </h3>
+                    <p class="text-base text-gray-600 font-normal leading-relaxed">
+                        Addressing social injustices and fostering community cohesion and dignity.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Pillar 2: Economic Empowerment -->
+            <div class="bg-[#f1f6f7] border border-transparent p-8 rounded-3xl shadow-sm flex flex-col justify-between transition-all duration-300 hover:bg-white hover:border-[#083d47]/30 hover:shadow-xl hover:-translate-y-1 group" data-aos="fade-up" data-aos-delay="50">
+                <div>
+                    <div class="w-12 h-12 rounded-2xl bg-[#083d47] flex items-center justify-center text-white text-lg mb-5 shadow-sm transition-transform duration-300 group-hover:scale-105">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <h3 class="text-xl font-extrabold text-slate-900 mb-3 tracking-tight">
+                        Economic Empowerment
+                    </h3>
+                    <p class="text-base text-gray-600 font-normal leading-relaxed">
+                        Creating sustainable pathways for families to achieve financial stability and growth.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Pillar 3: Spiritual Growth -->
+            <div class="bg-[#f1f6f7] border border-transparent p-8 rounded-3xl shadow-sm flex flex-col justify-between transition-all duration-300 hover:bg-white hover:border-[#083d47]/30 hover:shadow-xl hover:-translate-y-1 group" data-aos="fade-up" data-aos-delay="100">
+                <div>
+                    <div class="w-12 h-12 rounded-2xl bg-[#083d47] flex items-center justify-center text-white text-lg mb-5 shadow-sm transition-transform duration-300 group-hover:scale-105">
+                        <i class="fas fa-dove"></i>
+                    </div>
+                    <h3 class="text-xl font-extrabold text-slate-900 mb-3 tracking-tight">
+                        Spiritual Growth
+                    </h3>
+                    <p class="text-base text-gray-600 font-normal leading-relaxed">
+                        Nurturing faith and moral values as the foundation for lasting character change.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Pillar 4: Environmental Stewardship -->
+            <div class="bg-[#f1f6f7] border border-transparent p-8 rounded-3xl shadow-sm flex flex-col justify-between transition-all duration-300 hover:bg-white hover:border-[#083d47]/30 hover:shadow-xl hover:-translate-y-1 group" data-aos="fade-up" data-aos-delay="150">
+                <div>
+                    <div class="w-12 h-12 rounded-2xl bg-[#083d47] flex items-center justify-center text-white text-lg mb-5 shadow-sm transition-transform duration-300 group-hover:scale-105">
+                        <i class="fas fa-leaf"></i>
+                    </div>
+                    <h3 class="text-xl font-extrabold text-slate-900 mb-3 tracking-tight">
+                        Environmental Stewardship
+                    </h3>
+                    <p class="text-base text-gray-600 font-normal leading-relaxed">
+                        Promoting sustainable practices to protect the natural resources communities depend on.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Pillar 5: Local Ownership -->
+            <div class="bg-[#f1f6f7] border border-transparent p-8 rounded-3xl shadow-sm flex flex-col justify-between transition-all duration-300 hover:bg-white hover:border-[#083d47]/30 hover:shadow-xl hover:-translate-y-1 group" data-aos="fade-up" data-aos-delay="200">
+                <div>
+                    <div class="w-12 h-12 rounded-2xl bg-[#083d47] flex items-center justify-center text-white text-lg mb-5 shadow-sm transition-transform duration-300 group-hover:scale-105">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3 class="text-xl font-extrabold text-slate-900 mb-3 tracking-tight">
+                        Local Ownership
+                    </h3>
+                    <p class="text-base text-gray-600 font-normal leading-relaxed">
+                        Empowering communities to lead their own development journey.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Pillar 6: Knowledge & Innovation -->
+            <div class="bg-[#f1f6f7] border border-transparent p-8 rounded-3xl shadow-sm flex flex-col justify-between transition-all duration-300 hover:bg-white hover:border-[#083d47]/30 hover:shadow-xl hover:-translate-y-1 group" data-aos="fade-up" data-aos-delay="250">
+                <div>
+                    <div class="w-12 h-12 rounded-2xl bg-[#083d47] flex items-center justify-center text-white text-lg mb-5 shadow-sm transition-transform duration-300 group-hover:scale-105">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3 class="text-xl font-extrabold text-slate-900 mb-3 tracking-tight">
+                        Knowledge & Innovation
+                    </h3>
+                    <p class="text-base text-gray-600 font-normal leading-relaxed">
+                        Leveraging data and research to improve program effectiveness.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+ <section id="vision-split" class="py-16 lg:py-0 bg-[#083d47] text-white relative overflow-hidden flex items-center justify-center h-auto lg:h-screen lg:min-h-[620px] lg:max-h-[780px]">
+    
+    <!-- Left Geometric Glow Block -->
+    <div class="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-[#3a8fab]/10 blur-[120px] pointer-events-none"></div>
+
+    <div class="w-full max-w-6xl mx-auto px-6 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <!-- Left Side: Massive Typographic Headline Block (Spans 5 Columns) -->
+            <div class="lg:col-span-5 flex flex-col justify-center" data-aos="fade-right">
+                
+                <!-- Compact Structural Eyebrow Tag -->
+                <div class="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1 rounded-full mb-4 w-fit">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#3a8fab]"></span>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-[#7eb8d4]">Our Ultimate Destination</span>
+                </div>
+
+                <!-- Deeply Bold, Stark Heading -->
+                <h2 class="text-4xl md:text-5xl font-black text-white mb-6 tracking-tight uppercase leading-none">
+                    Our <br class="hidden lg:inline"/>Vision
+                </h2>
+
+                <!-- Premium Editorial Quote Block -->
+                <div class="relative pl-6 border-l-4 border-[#3a8fab]">
+                    <p class="text-lg md:text-xl font-black text-white leading-relaxed tracking-tight">
+                        To see thriving communities where the <span class="text-[#7eb8d4]">whole person</span> is nurtured, communities are empowered, and lasting impact becomes a living legacy.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right Side: Interlocking High-Contrast Grid (Spans 7 Columns) -->
+            <div class="lg:col-span-7" data-aos="fade-left">
+                <div class="grid grid-cols-1 sm:grid-cols-6 gap-4">
+                    
+                    <!-- Item 1 (Spans 3/6 columns) -->
+                    <div class="sm:col-span-3 bg-[#05282f] border border-white/10 p-6 rounded-2xl flex items-center gap-4 transition-all duration-300 hover:border-[#3a8fab] group">
+                        <div class="w-12 h-12 shrink-0 rounded-xl bg-[#3a8fab] flex items-center justify-center text-white text-lg shadow-md shadow-[#3a8fab]/10 group-hover:scale-105 transition-transform">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div>
+                            <span class="font-black text-white text-base block tracking-tight leading-tight">Thriving</span>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-[#7eb8d4] mt-0.5">Communities</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 2 (Spans 3/6 columns) -->
+                    <div class="sm:col-span-3 bg-[#05282f] border border-white/10 p-6 rounded-2xl flex items-center gap-4 transition-all duration-300 hover:border-[#3a8fab] group">
+                        <div class="w-12 h-12 shrink-0 rounded-xl bg-[#3a8fab] flex items-center justify-center text-white text-lg shadow-md shadow-[#3a8fab]/10 group-hover:scale-105 transition-transform">
+                            <i class="fas fa-heart-pulse"></i>
+                        </div>
+                        <div>
+                            <span class="font-black text-white text-base block tracking-tight leading-tight">Nurtured</span>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-[#7eb8d4] mt-0.5">Whole Person</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 3 (Spans 3/6 columns) -->
+                    <div class="sm:col-span-3 bg-[#05282f] border border-white/10 p-6 rounded-2xl flex items-center gap-4 transition-all duration-300 hover:border-[#3a8fab] group">
+                        <div class="w-12 h-12 shrink-0 rounded-xl bg-[#3a8fab] flex items-center justify-center text-white text-lg shadow-md shadow-[#3a8fab]/10 group-hover:scale-105 transition-transform">
+                            <i class="fas fa-hands-holding-child"></i>
+                        </div>
+                        <div>
+                            <span class="font-black text-white text-base block tracking-tight leading-tight">Empowered</span>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-[#7eb8d4] mt-0.5">Communities</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 4 (Spans 3/6 columns) -->
+                    <div class="sm:col-span-3 bg-[#05282f] border border-white/10 p-6 rounded-2xl flex items-center gap-4 transition-all duration-300 hover:border-[#3a8fab] group">
+                        <div class="w-12 h-12 shrink-0 rounded-xl bg-[#3a8fab] flex items-center justify-center text-white text-lg shadow-md shadow-[#3a8fab]/10 group-hover:scale-105 transition-transform">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <div>
+                            <span class="font-black text-white text-base block tracking-tight leading-tight">Lasting Impact</span>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-[#7eb8d4] mt-0.5">Our Commitment</p>
+                        </div>
+                    </div>
+
+                    <!-- Item 5 (Spans full 6/6 columns for unique structural grounding) -->
+                    <div class="sm:col-span-6 bg-gradient-to-r from-[#05282f] to-[#063740] border border-white/10 p-6 rounded-2xl flex items-center gap-4 transition-all duration-300 hover:border-[#3a8fab] group">
+                        <div class="w-12 h-12 shrink-0 rounded-xl bg-[#3a8fab] flex items-center justify-center text-white text-lg shadow-md shadow-[#3a8fab]/10 group-hover:scale-105 transition-transform">
+                            <i class="fas fa-gavel"></i>
+                        </div>
+                        <div>
+                            <span class="font-black text-white text-base block tracking-tight leading-tight">Living Legacy</span>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-[#7eb8d4] mt-0.5">Transforming Future Generations</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+    <section class="py-24" id="values">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <h2 class="text-4xl font-bold text-lhm-teal mb-16">Our Core Values</h2>
+            <div class="flex flex-wrap justify-center gap-12">
+                <!-- Fixed Holistic Integrity Card -->
+                <div class="text-center w-40 value-card" data-aos="fade-up">
+                    <div class="relative w-14 h-14 mx-auto mb-4 flex items-center justify-center">
+                        <i class="fas fa-shield-halved text-5xl text-gray-300 absolute"></i>
+                        <i class="fas fa-check text-xl text-white absolute mt-0.5"></i>
+                    </div>
+                    <span class="font-bold text-lhm-teal block mt-2">Integrity</span>
+                </div>
+                <div class="text-center w-40 value-card" data-aos="fade-up" data-aos-delay="100">
+                    <i class="fas fa-scale-balanced text-5xl text-gray-300 mb-4 block"></i>
+                    <span class="font-bold text-lhm-teal">Equity</span>
+                </div>
+                <div class="text-center w-40 value-card" data-aos="fade-up" data-aos-delay="200">
+                    <i class="fas fa-chart-bar text-5xl text-gray-300 mb-4 block"></i>
+                    <span class="font-bold text-lhm-teal">Accountability</span>
+                </div>
+                <div class="text-center w-40 value-card" data-aos="fade-up" data-aos-delay="300">
+                    <i class="fas fa-handshake-angle text-5xl text-gray-300 mb-4 block"></i>
+                    <span class="font-bold text-lhm-teal">Collaboration</span>
+                </div>
+                <div class="text-center w-40 value-card" data-aos="fade-up" data-aos-delay="400">
+                    <i class="fas fa-brain text-5xl text-gray-300 mb-4 block"></i>
+                    <span class="font-bold text-lhm-teal">Holistic Thinking</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+   <!-- Modern Layered Board of Directors Section -->
+    <!-- High-Visibility Focus: Board of Directors Section -->
+    <!-- Compact High-Visibility Focus: Board of Directors Section -->
+  <!-- Compact High-Visibility Focus: Board of Directors Section -->
+    <!-- Split-Canvas High-Visibility Board of Directors Section -->
+   <!-- Split-Canvas High-Visibility Board of Directors Section -->
+    <!-- Frameless Canvas: Clear Photo & High Contrast Section -->
+ <!-- Flipped Minimalist Grid Section -->
+ <!-- Photo Top / Labeling Bottom: High-Contrast Teal Section -->
+ <section class="py-24 bg-lhm-blue text-white relative overflow-hidden">
+    <div class="absolute top-0 left-0 w-full overflow-hidden leading-none z-20">
+        <svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="relative block w-full h-[50px] fill-white">
+            <path d="M0,0 C300,60 900,60 1200,0 V0 H0 Z"></path>
+        </svg>
+    </div>
+    
+    <div class="max-w-6xl mx-auto px-6 relative z-10 pt-10" id="ourteam">
+        <div class="text-center mb-16" data-aos="fade-up">
+            <h2 class="text-3xl md:text-4xl font-bold mb-3 tracking-tight text-white">Board of Directors</h2>
+            <p class="text-lhm-blue-light font-medium tracking-wide max-w-sm mx-auto text-sm">
+                Dedicated professionals guiding our mission across Africa.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+    
+            <div class="bg-teal-950/40 border border-white/10 rounded-2xl p-5 shadow-lg flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group" data-aos="fade-up">
+                <div class="h-64 w-full rounded-xl overflow-hidden bg-teal-900/60 shadow-inner flex-shrink-0">
+                    <img src="tes.jpg" alt="Tesfaye Bekema" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-102">
+                </div>
+                
+                <div class="pt-4 flex-grow flex flex-col justify-end">
+                    <div class="flex justify-between items-start w-full">
+                        <div>
+                            <h5 class="font-bold text-white text-lg tracking-tight">
+                                Tesfaye Bekema
+                            </h5>
+                            <p class="text-[11px] text-lhm-blue-light uppercase font-extrabold tracking-widest mt-1">
+                                Chairperson
+                            </p>
+                        </div>
+                        
+                        <!-- <div class="flex gap-3 text-white/40 pt-1">
+                            <a href="#" class="hover:text-white transition-colors text-sm" aria-label="LinkedIn Profile"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="hover:text-white transition-colors text-sm" aria-label="Email Contact"><i class="fas fa-envelope"></i></a>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-teal-950/40 border border-white/10 rounded-2xl p-5 shadow-lg flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group" data-aos="fade-up" data-aos-delay="50">
+                <div class="h-64 w-full rounded-xl overflow-hidden bg-teal-900/60 shadow-inner flex-shrink-0">
+                    <img src="joseph.jpg" alt="Yoseph Shenkute" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-102">
+                </div>
+                
+                <div class="pt-4 flex-grow flex flex-col justify-end">
+                    <div class="flex justify-between items-start w-full">
+                        <div>
+                            <h5 class="font-bold text-white text-lg tracking-tight">
+                                Yoseph Shenkute
+                            </h5>
+                            <p class="text-[11px] text-lhm-blue-light uppercase font-extrabold tracking-widest mt-1">
+                                Deputy Chairperson
+                            </p>
+                        </div>
+                        <!-- <div class="flex gap-3 text-white/40 pt-1">
+                            <a href="#" class="hover:text-white transition-colors text-sm" aria-label="LinkedIn Profile"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="hover:text-white transition-colors text-sm" aria-label="Email Contact"><i class="fas fa-envelope"></i></a>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-teal-950/40 border border-white/10 rounded-2xl p-5 shadow-lg flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group" data-aos="fade-up" data-aos-delay="100">
+                <div class="h-64 w-full rounded-xl overflow-hidden bg-teal-900/60 shadow-inner flex-shrink-0">
+                    <img src="fenet.jpg" alt="Fenet Teshome" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-102">
+                </div>
+                
+                <div class="pt-4 flex-grow flex flex-col justify-end">
+                    <div class="flex justify-between items-start w-full">
+                        <div>
+                            <h5 class="font-bold text-white text-lg tracking-tight">
+                                Fenet Teshome
+                            </h5>
+                            <p class="text-[11px] text-lhm-blue-light uppercase font-extrabold tracking-widest mt-1">
+                                Board Secretary
+                            </p>
+                        </div>
+                        <!-- <div class="flex gap-3 text-white/40 pt-1">
+                            <a href="#" class="hover:text-white transition-colors text-sm" aria-label="LinkedIn Profile"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="hover:text-white transition-colors text-sm" aria-label="Email Contact"><i class="fas fa-envelope"></i></a>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+           
+            <div class="bg-teal-950/40 border border-white/10 rounded-2xl p-5 shadow-lg flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group" data-aos="fade-up" data-aos-delay="150">
+                <div class="h-64 w-full rounded-xl overflow-hidden bg-teal-900/60 shadow-inner flex-shrink-0">
+                    <img src="Mahider.jpg" alt="Mahider Tulu" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-102">
+                </div>
+                
+                <div class="pt-4 flex-grow flex flex-col justify-end">
+                    <div class="flex justify-between items-start w-full">
+                        <div>
+                            <h5 class="font-bold text-white text-lg tracking-tight">
+                                Mahider Tulu
+                            </h5>
+                            <p class="text-[11px] text-lhm-blue-light uppercase font-extrabold tracking-widest mt-1">
+                                Board Member
+                            </p>
+                        </div>
+                        <!-- <div class="flex gap-3 text-white/40 pt-1">
+                            <a href="#" class="hover:text-white transition-colors text-sm" aria-label="LinkedIn Profile"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="hover:text-white transition-colors text-sm" aria-label="Email Contact"><i class="fas fa-envelope"></i></a>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-teal-950/40 border border-white/10 rounded-2xl p-5 shadow-lg flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group" data-aos="fade-up" data-aos-delay="200">
+                <div class="h-64 w-full rounded-xl overflow-hidden bg-teal-900/60 shadow-inner flex-shrink-0">
+                    <img src="roba.jpg" alt="Dr Roba Sherda" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-102">
+                </div>
+                
+                <div class="pt-4 flex-grow flex flex-col justify-end">
+                    <div class="flex justify-between items-start w-full">
+                        <div>
+                            <h5 class="font-bold text-white text-lg tracking-tight">
+                                Dr Roba Sherda
+                            </h5>
+                            <p class="text-[11px] text-lhm-blue-light uppercase font-extrabold tracking-widest mt-1">
+                                Board Member
+                            </p>
+                        </div>
+                        <!-- <div class="flex gap-3 text-white/40 pt-1">
+                            <a href="#" class="hover:text-white transition-colors text-sm" aria-label="LinkedIn Profile"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="hover:text-white transition-colors text-sm" aria-label="Email Contact"><i class="fas fa-envelope"></i></a>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-teal-950/40 border border-white/10 rounded-2xl p-5 shadow-lg flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-1 group" data-aos="fade-up" data-aos-delay="250">
+                <div class="h-64 w-full rounded-xl overflow-hidden bg-teal-900/60 shadow-inner flex-shrink-0">
+                    <img src="dinku shumi.jpg" alt="Dinku Shumi" class="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-102">
+                </div>
+                
+                <div class="pt-4 flex-grow flex flex-col justify-end">
+                    <div class="flex justify-between items-start w-full">
+                        <div>
+                            <h5 class="font-bold text-white text-lg tracking-tight">
+                                Dinku Shumi
+                            </h5>
+                            <p class="text-[11px] text-lhm-blue-light uppercase font-extrabold tracking-widest mt-1">
+                                Executive Director
+                            </p>
+                        </div>
+                        <!-- <div class="flex gap-3 text-white/40 pt-1">
+                            <a href="#" class="hover:text-white transition-colors text-sm" aria-label="LinkedIn Profile"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="hover:text-white transition-colors text-sm" aria-label="Email Contact"><i class="fas fa-envelope"></i></a>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+      <footer class="py-20 bg-white text-center border-t border-gray-100">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col items-center mb-12">
+                <img src="lhm.png" alt="LHM Logo" class="h-14 w-auto object-contain mb-6">
+                <h3 class="text-lhm-teal font-bold-title text-2xl mb-2">Legacy Holistic Mission</h3>
+                <p class="text-gray-400 font-medium italic text-sm">"Serving the Whole Person, Empowering Every Community, Lasting Impact"</p>
+            </div>
+            
+            <div class="flex flex-wrap justify-center gap-10 mb-12">
+                <a href="index.php" class="text-gray-600 hover:text-lhm-blue transition text-sm font-bold tracking-widest uppercase">Home</a>
+                <a href="about.php" class="text-gray-600 hover:text-lhm-blue transition text-sm font-bold tracking-widest uppercase">About</a>
+                <a href="programs.php" class="text-gray-600 hover:text-lhm-blue transition text-sm font-bold tracking-widest uppercase">Programs</a>
+                <a href="index.php#donate" class="text-gray-600 hover:text-lhm-blue transition text-sm font-bold tracking-widest uppercase">Donate</a>
+                <a href="index.php#contact" class="text-gray-600 hover:text-lhm-blue transition text-sm font-bold tracking-widest uppercase">Contact</a>
+                <a href="about.php#ourteam" class="text-gray-600 hover:text-lhm-blue transition text-sm font-bold tracking-widest uppercase">Our-Team</a>
+            </div>
+
+            <div class="flex justify-center gap-8 mb-12">
+                <a href="https://et.linkedin.com/company/legacy-holistic-mission-lhm" class="w-12 h-12 bg-lhm-gray rounded-full flex items-center justify-center text-gray-400 hover:bg-[#0077B5] hover:text-white transition-all duration-300"><i class="fab fa-linkedin-in"></i></a>
+                <a href="https://web.facebook.com/people/Legacy-Holistic-Mission/61586454209081/#" class="w-12 h-12 bg-lhm-gray rounded-full flex items-center justify-center text-gray-400 hover:bg-[#1877F2] hover:text-white transition-all duration-300"><i class="fab fa-facebook-f"></i></a>
+            </div>
+
+            <div class="text-gray-300 text-[10px] font-bold uppercase tracking-[0.4em]">
+                &copy; 2026 Legacy Holistic Mission. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 900, once: true, offset: 50 });
+        const mobileNavToggle = document.getElementById('mobileNavToggle');
+        const mobileNavMenu = document.getElementById('mobileNavMenu');
+        if (mobileNavToggle && mobileNavMenu) {
+            mobileNavToggle.addEventListener('click', () => {
+                const isOpen = mobileNavMenu.classList.toggle('open');
+                mobileNavToggle.setAttribute('aria-expanded', String(isOpen));
+                mobileNavToggle.innerHTML = isOpen ? '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+            });
+            mobileNavMenu.querySelectorAll('a').forEach((link) => {
+                link.addEventListener('click', () => {
+                    mobileNavMenu.classList.remove('open');
+                    mobileNavToggle.setAttribute('aria-expanded', 'false');
+                    mobileNavToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                });
+            });
+        }
+    </script>
+</body>
+</html>
